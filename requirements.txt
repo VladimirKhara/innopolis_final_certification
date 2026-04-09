@@ -1,0 +1,9 @@
+Django==5.2.13
+torch
+evaluate
+transformers
+django-bootstrap5
+librosa
+torchvision
+torchaudio
+cuda-toolkit
