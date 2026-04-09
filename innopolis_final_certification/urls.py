@@ -15,10 +15,13 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, re_path
 from asr_summary import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('index', views.index)
+    re_path(r'^index', views.AudioListView.as_view(), name='main'),
+    re_path(r'^upload', views.upload_audio, name='upload'),
+    path("delete/<int:pk>", views.AudioDeleteView.as_view()),
+    path("processing/<int:pk>", views.processing)
 ]

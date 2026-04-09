@@ -1,1 +1,32 @@
-<h1>saddasdasa123</h1>
+{% extends "base.html" %}
+{% block content %}
+<div class="row">
+    <div class="row">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Название</th>
+                    <th scope="col">Путь</th>
+                    <th scope="col">ASR + суммаризация</th>
+                    <th scope="col">Удаление</th> 
+                </tr>
+            </thead>
+            <tbody>
+                {% for audio in object_list %}
+                <tr>
+                    <td>{{audio.id}}</td>
+                    <td>{{audio.title}}</td>
+                    <td>{{audio.audiofile}}</td>
+                    <td><button type="button" class="btn btn-primary"
+                            onclick="redirect('processing/{{ audio.id }}');">Запуск</button></td>
+                    <td><button type="button" class="btn btn-danger"
+                            onclick="redirect('delete/{{ audio.id }}');">Удалить</button></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+

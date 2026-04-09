@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row">
+    <div class="col">
+        <button type="button" class="btn btn-primary" onclick="redirect('index');">На главную</button>
+    </div>
+    <div class="row">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th scope="col">Файл</th>
+                    <th scope="col">Распознанный текст</th>
+                    <th scope="col">Суммаризация распознанного текста</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{file}}</td>
+                    <td>{{asr_data}}</td>
+                    <td>{{summarization_data}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+
