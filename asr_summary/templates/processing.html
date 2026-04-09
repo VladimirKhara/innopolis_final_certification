@@ -1,9 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
 <div class="row">
-    <div class="col">
-        <button type="button" class="btn btn-primary" onclick="redirect('index');">На главную</button>
-    </div>
     <div class="row">
         <table class="table table-bordered">
             <thead>
@@ -16,8 +13,13 @@
             <tbody>
                 <tr>
                     <td>{{file}}</td>
-                    <td>{{asr_data}}</td>
-                    <td>{{summarization_data}}</td>
+                    <td>{{asr_result.transcription}}</td>
+                    <td>{{summarization_result.summatization_text}}</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Время выполнения: {{asr_result.elapsed_time}} сек.</td>
+                    <td>Время выполнения: {{summarization_result.elapsed_time}} сек.</td>
                 </tr>
             </tbody>
         </table>

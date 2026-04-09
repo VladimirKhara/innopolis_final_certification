@@ -9,7 +9,7 @@
                     <th scope="col">Название</th>
                     <th scope="col">Путь</th>
                     <th scope="col">ASR + суммаризация</th>
-                    <th scope="col">Удаление</th> 
+                    <th scope="col">Удаление</th>
                 </tr>
             </thead>
             <tbody>
@@ -20,6 +20,12 @@
                     <td>{{audio.audiofile}}</td>
                     <td><button type="button" class="btn btn-primary"
                             onclick="redirect('processing/{{ audio.id }}');">Запуск</button></td>
+                    <td>
+                        <audio controls>
+                            <source src="{{ audio.audiofile.url }}" type="audio/mp3">
+                            Your browser does not support the audio element.
+                        </audio>
+                    </td>
                     <td><button type="button" class="btn btn-danger"
                             onclick="redirect('delete/{{ audio.id }}');">Удалить</button></td>
                 </tr>
@@ -29,4 +35,3 @@
     </div>
 </div>
 {% endblock %}
-

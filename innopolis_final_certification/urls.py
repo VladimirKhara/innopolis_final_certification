@@ -17,6 +17,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, re_path
 from asr_summary import views
+from django.conf.urls.static import static
+from django.conf import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -24,4 +26,4 @@ urlpatterns = [
     re_path(r'^upload', views.upload_audio, name='upload'),
     path("delete/<int:pk>", views.AudioDeleteView.as_view()),
     path("processing/<int:pk>", views.processing)
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

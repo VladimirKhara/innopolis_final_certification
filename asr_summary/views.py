@@ -1,4 +1,4 @@
-import time
+import traceback
 
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
@@ -19,8 +19,8 @@ def processing(request, pk):
     audio = AudioFile.objects.get(id=pk)
     filename = audio.audiofile
     asr_result = start_asr(filename)
-    summarization_result = start_summatization(asr_result)
-    return render(request, 'processing.html', context={'file': audio.audiofile,'asr_data': asr_result, 'summarization_data' : summarization_result})
+    summarization_result = start_summatization(asr_result.transcription)
+    return render(request, 'processing.html', context={'file': audio.audiofile,'asr_result': asr_result, 'summarization_result' : summarization_result})
 
 def upload_audio(request):
     if request.method == 'POST':
@@ -41,5 +41,8 @@ class AudioDeleteView(DeleteView):
 
     def form_valid(self, form):
         obj = self.get_object()
-        obj.audiofile.delete(save=False)
+        try:
+            obj.audiofile.delete(save=False)
+        except Exception:
+            traceback.print_exc()
         return super().form_valid(form)

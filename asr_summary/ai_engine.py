@@ -1,33 +1,41 @@
+import gc
+
 import librosa
 import torch
 from asr_summary.apps import AsrSummaryConfig
-import time
 from dataclasses import dataclass
+from datetime import datetime
 
 @dataclass
 class ASRResult:
     transcription: str
-    wer: float
-    elapsed_time: int
+    elapsed_time: float
+
+@dataclass
+class SummatizationResult:
+    summatization_text: str
+    elapsed_time: float
 
 def start_asr(filename):
+    print(AsrSummaryConfig.device)
     forced_decoder_ids = AsrSummaryConfig.asr_processor.get_decoder_prompt_ids(language="russian", task="transcribe")
+    start = datetime.now()
     audio, sr = librosa.load(filename, sr=16000)
-    print(time.strftime("START: %H:%M:%S", time.localtime()))
-    input_features = AsrSummaryConfig.asr_processor(audio, sampling_rate=16000, return_tensors="pt").input_features
+    audio_copy  = audio.copy()
+    input_features = AsrSummaryConfig.asr_processor(audio_copy, sampling_rate=16000, return_tensors="pt").input_features
     input_features = input_features.to(AsrSummaryConfig.device)
-    print(time.strftime("After processing: %H:%M:%S", time.localtime()))
     with torch.no_grad():
         predicted_ids = AsrSummaryConfig.asr_model.generate(input_features, forced_decoder_ids=forced_decoder_ids)
-    print(time.strftime("After generation: %H:%M:%S", time.localtime()))
-
     transcription = AsrSummaryConfig.asr_processor.batch_decode(predicted_ids, skip_special_tokens=True)
-    print("Транскрипция:", transcription[0]) 
-    print(time.strftime("END: %H:%M:%S", time.localtime()))
-    
-    return transcription[0]
+    end = datetime.now()
+    diff = (end-start).total_seconds()
+    del audio
+    torch.cuda.empty_cache()  
+    gc.collect()
+    return ASRResult(transcription[0], diff)
 
 def start_summatization(text):
+    start = datetime.now()
     input_ids = AsrSummaryConfig.summarization_tokenizer(
         [text],
         max_length=600,
@@ -42,5 +50,6 @@ def start_summatization(text):
         no_repeat_ngram_size=4
     )[0]
     summary = AsrSummaryConfig.summarization_tokenizer.decode(output_ids, skip_special_tokens=True)
-    print(summary)
-    return summary
+    end = datetime.now()
+    diff = (end-start).total_seconds()
+    return SummatizationResult(summary, diff)
